@@ -55,6 +55,7 @@ NOTES:
 			<PHRASE VALSTR="Command_BreachAndClear">Breach ?it ?the ?that ?door ?over ?there ?and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_BreachAndMakeEntry">Breach ?it ?the ?that ?door ?over ?there ?and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_OpenAndClear">Open ?it ?the ?that ?door ?over ?there ?up ?and ?go ?clear ...</PHRASE>
+			<PHRASE VALSTR="Command_OpenAndClear">Enter ?and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenAndMakeEntry">Open ?it ?the ?that ?door ?over ?there ?and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_OpenAndClear">Get through ?there ?the ?that ?door, ?and ?go ?clear ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenAndMakeEntry">Make entry ?and ?clear ?that ?it ?the ?room ?door ?area ?sector</PHRASE>
@@ -62,6 +63,7 @@ NOTES:
 			<PHRASE VALSTR="Command_BreachBangAndClear">+Breach ?it ?the ?that ?door ?room ?over ?there ?and ?flash +bang ?it ?the ?room ?and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_BreachBangAndMakeEntry">+Breach ?it ?the ?that ?door ?over ?there ?and ?flash +bang ?it ?the ?room ?and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_OpenBangAndClear">?Open ?it ?the ?that ?door ?over ?there ?throw ?a ?flash bang ?and clear ...</PHRASE>
+			<PHRASE VALSTR="Command_OpenBangAndClear">Enter ?throw ?in ?a ?flash bang ?and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenBangAndMakeEntry">Open ?it ?that ?the ?door ?over ?there ?throw ?a ?flash bang ?and ?prepare ?to make entry ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenBangAndMakeEntry">Make Entry ?with ?a ?flash bang ?and ?clear ...</PHRASE>
 
@@ -69,6 +71,7 @@ NOTES:
 			<PHRASE VALSTR="Command_BreachGasAndClear">Breach ?it ?the ?that ?door, ?throw ?toss see yes, and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_BreachGasAndMakeEntry">Breach ?it ?the ?that ?door ?room ?over ?there ?and ?toss ?throw ?a ?CS ?See ?yes +gas ?grenade ?in ?it ?the ?room and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_OpenGasAndClear">?Open ?it ?the ?that ?door ?room ?over ?there ?and ?toss ?throw ?a ?see ?yes ?CS +gas ?grenade and clear ...</PHRASE>
+			<PHRASE VALSTR="Command_OpenGasAndClear">?Enter, ?toss ?throw ?in ?a see yes? ?gas ?grenade and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenGasAndClear">?Open ?it ?the ?that ?door ?room ?over ?there, ?toss ?throw ?a see yes? ?gas ?grenade and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenGasAndMakeEntry">?Open, see yes ?gas ?grenade, and clear.</PHRASE>
 			<PHRASE VALSTR="Command_OpenGasAndMakeEntry">?Open ?it ?the ?that ?door ?room ?over ?there ?and ?throw ?toss ?a ?see ?yes ?CS +gas ?grenade and ?prepare ?to make entry.</PHRASE>
@@ -78,6 +81,7 @@ NOTES:
 			<PHRASE VALSTR="Command_BreachStingAndClear">Breach ?it ?that ?the ?room ?door ?over ?there ?and ?throw ?toss ?a +sting ?grenade ?and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_BreachStingAndMakeEntry">Breach ?it ?that ?the ?room ?door ?over ?there ?and ?toss ?throw ?a +sting ?grenade and ?prepare ?to make entry.</PHRASE>
 			<PHRASE VALSTR="Command_OpenStingAndClear">?Open ?it ?that ?the ?room ?door ?over ?there ?and ?throw ?toss ?a sting ?grenade and clear ...</PHRASE>
+			<PHRASE VALSTR="Command_OpenStingAndClear">Enter, ?throw ?toss ?in ?a sting ?grenade and clear ...</PHRASE>
 			<PHRASE VALSTR="Command_OpenStingAndMakeEntry">?Open ?it ?that ?the ?room ?door ?over ?there ?and ?throw ?toss ?a sting ?grenade and ?prepare ?to make entry.</PHRASE>
 
 			<PHRASE VALSTR="Command_FallIn">Fall in ?on ?me.</PHRASE>
@@ -98,9 +102,11 @@ NOTES:
 
 			<PHRASE VALSTR="Command_Disable">+Disable ?that ?the ...</PHRASE>
 			<PHRASE VALSTR="Command_Disable">+Disarm ?that ?the ...</PHRASE>
+			<PHRASE VALSTR="Command_Disable">Render ?it ?that inactive ...</PHRASE>
 
 			<PHRASE VALSTR="Command_Drop_Lightstick">Drop ?a +light stick.</PHRASE>
 			<PHRASE VALSTR="Command_Drop_Lightstick">Throw ?down ?a +light stick.</PHRASE>
+			<PHRASE VALSTR="Command_Drop_Lightstick">Toss ?down ?in ?a +light stick.</PHRASE>
 
 			<PHRASE VALSTR="Command_CloseDoor">Close ...</PHRASE>
 			<PHRASE VALSTR="Command_CloseDoor">Shut ...</PHRASE>
@@ -119,7 +125,7 @@ NOTES:
 			<PHRASE VALSTR="Command_Restrain">?Hand +cuff ?him ?her</PHRASE>
 			<PHRASE VALSTR="Command_Restrain">Zip ?tie ?him ?her ?up</PHRASE>
 			<PHRASE VALSTR="Command_Restrain">Tie ?him ?her ?up ?down</PHRASE>
-			<PHRASE VALSTR="Command_Restrain">Make ?him ?her secure</PHRASE>
+			<PHRASE VALSTR="Command_Restrain">Make ?him ?her ?em secure</PHRASE>
 
 			<PHRASE VALSTR="Command_MirrorRoom">Mirror ?into ?the room ...</PHRASE>
 			<PHRASE VALSTR="Command_MirrorUnderDoor">Mirror ?under ?the door ...</PHRASE>
@@ -136,6 +142,8 @@ NOTES:
 			<PHRASE VALSTR="Command_Deploy_Wedge">Deploy ... +wedge</PHRASE>
 			<PHRASE VALSTR="Command_Deploy_Wedge">Use ... +wedge</PHRASE>
 			<PHRASE VALSTR="Command_Deploy_Wedge">Place ... +wedge</PHRASE>
+			<PHRASE VALSTR="Command_Deploy_Wedge">Wedge ?the ?that door ...</PHRASE>
+			<PHRASE VALSTR="Command_Deploy_Wedge">Jam ?the ?that door ...</PHRASE>
 			<PHRASE VALSTR="Command_Deploy_BreachingShotgun">Deploy ... ?breaching +shotgun.</PHRASE>
 			<PHRASE VALSTR="Command_Deploy_BreachingShotgun">Use ... ?breaching +shotgun.</PHRASE>
 			<PHRASE VALSTR="Command_Deploy_LessLethalShotgun">Deploy less lethal ...</PHRASE>
@@ -212,9 +220,13 @@ NOTES:
 		<LIST PROPNAME="Actions">
 			<PHRASE VALSTR="TOCReport">Talk, this is entry team ...</PHRASE>
 			<PHRASE VALSTR="TOCReport">Entry team to talk ...</PHRASE>
-			<PHRASE VALSTR="TOCReport">Talk, we ...</PHRASE>
 			<PHRASE VALSTR="TOCReport">Talk, there's ...</PHRASE>
+			<PHRASE VALSTR="TOCReport">Talk, we ...</PHRASE>
 			<PHRASE VALSTR="TOCReport">Talk, there appears ...</PHRASE>
+			<PHRASE VALSTR="TOCReport">Talk, suspect ...</PHRASE>
+			<PHRASE VALSTR="TOCReport">Talk, civilian ...</PHRASE>
+			<PHRASE VALSTR="TOCReport">Talk, hostage ...</PHRASE>
+			<PHRASE VALSTR="TOCReport">Talk, contact ...</PHRASE>
 			<PHRASE VALSTR="Compliance">... Police ...</PHRASE>
 			<PHRASE VALSTR="Compliance">... Arms up ...</PHRASE>
 			<PHRASE VALSTR="Compliance">... Arms where ...</PHRASE>
