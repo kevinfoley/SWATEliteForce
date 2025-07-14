@@ -49,6 +49,7 @@ The bulk of this update is a large AI update and major changes to the weapons to
   - Changed "Type X" armor to say "Level X" to keep in-line with NIJ armor ratings. (thanks to kevinfoley)
   - Clicking "PLAY" on a Quick Mission Maker mission in a campaign will now select the mission you had highlighted, instead of dumping you to the campaign.
   - Cleaned up the logo on the main menu.
+  - Fixed various issues with the default speech grammar causing some commands to not work properly
   - Documentation (*.md) has been cleaned up.
 
 ### Equipment Changes
@@ -57,7 +58,7 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
 
 **Assault Rifles: G36K**
 
-  - Removed holographic sights options as they're anachronistic.
+  - Removed holographic sights options
   - New inventory thumbnail.
   - Fixed the rate of fire and tweaked other stats.
   - Reskinned all variations to fit SWAT 4's aesthetic better.
@@ -69,7 +70,7 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
 
 **Assault Rifles: M4A1**
 
-  - Removed holographic sights options as they're anachronistic.
+  - Removed holographic sights options
   - New inventory thumbnail.
   - Reskinned all variations to fit SWAT 4's aesthetic better.
   - Fixed smoothing group problems and other issues on all variations' meshes.
@@ -141,13 +142,13 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
 
 **Submachine Guns: MP5A4**
 
-  - Removed holographic sight variant as it is anachronistic
+  - Removed holographic sight variant
   - Reskinned all variations to fit SWAT 4's aesthetics better.
   - Fixed smoothing groups on all variations.
   - Improved rear sights on all variations
   - Tweaked stats
   - *Suppressed variation:*
-    - Slimmed the handguard
+    - Slimmed the handguard and corrected the flashlight for accuracy
     - New inventory thumbnail
 
 **Submachine Guns: Colt Model 635**
@@ -162,7 +163,7 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
 
 **Submachine Guns: UMP-45**
 
-  - Remove holographic sight variant as it is anachronistic
+  - Remove holographic sight variant
   - Reskinned all variations to fit SWAT 4's aesthetics better.
   - Fixed reload sound effects on all variations.
   - Tweaked stats on all variations
@@ -183,6 +184,7 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
 **Submachine Guns: MP5SD6**
 
   - Renamed to MP5SD5 (the correct name for this weapon)
+  - New inventory thumbnail
 
 **Submachine Guns: MP5K Tactical SD**
 
