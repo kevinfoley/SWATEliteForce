@@ -1,0 +1,1 @@
+class Sight extends Attachment;

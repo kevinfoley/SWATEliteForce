@@ -103,6 +103,7 @@ simulated function UpdateHandsForRendering()
     local vector Velocity, Acceleration;
 	local float MaxInertiaOffset;
 	local SwatWeapon Weapon;
+    local Sight Optic;
     local bool showRedDot;
 
     OwnerPawn = Pawn(Owner);
@@ -261,6 +262,62 @@ function RenderRedDot(Canvas canvas) {
         // Can't figure out a way to render it at the same time as hands so that it is properly
         // depth sorted relative to our weapon. -Kevin
         canvas.DrawActor(redDot, false, true);
+    }
+
+    UpdateSightAttachmentPosition();
+    RenderSightAttachment(canvas);
+}
+
+function UpdateSightAttachmentPosition() {
+    local Pawn OwnerPawn;
+    local SwatWeapon Weapon;
+    local HandheldEquipment EquippedItem;
+    local HandheldEquipmentModel Model;
+    local Sight Optic;
+    local vector SightLocation;
+
+    OwnerPawn = Pawn(Owner);
+    EquippedItem = OwnerPawn.GetActiveItem();
+    if (EquippedItem != None)
+    {
+        Weapon = SwatWeapon(EquippedItem);
+        if (Weapon != None)
+        {
+            Optic = Weapon.GetSight();
+            if (Optic != None) {
+                Model = Weapon.GetFirstPersonModel();
+                SightLocation = Model.Location + (Weapon.GetFirstPersonSightOffset() >> Model.Rotation);
+                Optic.SetLocation(SightLocation);
+                Optic.SetRotation(Model.Rotation);
+            }
+        }
+    }
+}
+
+function RenderSightAttachment(Canvas canvas) {
+    local Pawn OwnerPawn;
+    local SwatWeapon Weapon;
+    local HandheldEquipment EquippedItem;
+    local HandheldEquipmentModel Model;
+    local Sight Optic;
+    local vector SightLocation;
+
+    OwnerPawn = Pawn(Owner);
+    EquippedItem = OwnerPawn.GetActiveItem();
+    if (EquippedItem != None)
+    {
+        Weapon = SwatWeapon(EquippedItem);
+        if (Weapon != None)
+        {
+            Optic = Weapon.GetSight();
+            if (Optic != None) {
+                Model = Weapon.GetFirstPersonModel();
+                Optic.Show();
+                canvas.DrawActor(Model, false, true);
+                canvas.DrawActor(Optic, false, true);
+                Optic.Hide();
+            }
+        }
     }
 }
 

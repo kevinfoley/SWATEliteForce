@@ -201,9 +201,15 @@ var config float ZoomedFovModifier;
 // Whether this item ignores the "Disable Ironsights Zoom" property
 var(Zoom) config bool IgnoreZoomSetting;
 
+// Placement relative to weapon
+var config vector SightOffsetFirstPerson;
+var config vector SightOffsetThirdPerson;
+
 //a bit of a hack since we can't add vars to Hands.uc - K.F.
 var float IronSightAnimationProgress;	//denotes position of weapon, in linear range where 0 = held at hip and 1 = fully aiming down sight
 var vector HandsOffsetLastFrame;
+
+var protected Sight sight;
 
 var bool bPenetratesDoors;
 
@@ -1544,7 +1550,27 @@ simulated function MutateFPHandheldEquipmentModel(HandheldEquipmentModel Model)
       Model.SetStaticMesh(FirstPersonStaticMesh);
     }
   }
+
+  sight = Spawn(class'RedDotSight', Pawn(Owner).GetHands());
+  //sight.SetDrawScale(2.0);
 }
+
+function Sight GetSight()
+{
+  return sight;
+}
+
+function vector GetFirstPersonSightOffset()
+{
+    return SightOffsetFirstPerson;
+}
+
+
+function vector GetThirdPersonSightOffset()
+{
+    return SightOffsetThirdPerson;
+}
+
 
 simulated function MutateTPHandheldEquipmentModel(HandheldEquipmentModel Model)
 {
@@ -1573,6 +1599,10 @@ simulated function MutateTPHandheldEquipmentModel(HandheldEquipmentModel Model)
       Model.SetStaticMesh(ThirdPersonStaticMesh);
     }
   }
+
+  sight = Spawn(class'RedDotSight', self);
+  sight.SetDrawScale(2.0);
+  Model.AttachToBone(sight, 'R_Grip');
 }
 
 //simulated function UnEquippedHook();  //TMC do we want to blank the HUD's ammo count?
