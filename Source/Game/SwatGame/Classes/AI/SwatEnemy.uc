@@ -1176,15 +1176,28 @@ native event float GetAdditionalBaseAimError();
 // overridden from ISwatAI
 function float GetTimeToWaitBeforeFiring()
 {
-  switch(Skill)
-  {
-    case EnemySkill_High:
-      return RandRange(class'SwatEnemyConfig'.default.HighSkillMinTimeBeforeShooting, class'SwatEnemyConfig'.default.HighSkillMaxTimeBeforeShooting);
-    case EnemySkill_Medium:
-      return RandRange(class'SwatEnemyConfig'.default.MediumSkillMinTimeBeforeShooting, class'SwatEnemyConfig'.default.MediumSkillMaxTimeBeforeShooting);
-    case EnemySkill_Low:
-      return RandRange(class'SwatEnemyConfig'.default.LowSkillMinTimeBeforeShooting, class'SwatEnemyConfig'.default.LowSkillMaxTimeBeforeShooting);
-  }
+	local float TimeToWait;
+
+	switch(Skill)
+	{
+		case EnemySkill_High:
+			TimeToWait = RandRange(class'SwatEnemyConfig'.default.HighSkillMinTimeBeforeShooting, class'SwatEnemyConfig'.default.HighSkillMaxTimeBeforeShooting);
+			break;
+		case EnemySkill_Medium:
+			TimeToWait = RandRange(class'SwatEnemyConfig'.default.MediumSkillMinTimeBeforeShooting, class'SwatEnemyConfig'.default.MediumSkillMaxTimeBeforeShooting);
+			break;
+		case EnemySkill_Low:
+			TimeToWait = RandRange(class'SwatEnemyConfig'.default.LowSkillMinTimeBeforeShooting, class'SwatEnemyConfig'.default.LowSkillMaxTimeBeforeShooting);
+			break;
+	}
+
+	if (Level.NetMode != NM_Standalone)
+	{
+		// Extra lag time compensation
+		TimeToWait += 0.3f;
+	}
+
+	return TimeToWait;
 }
 
 // overridden from SwatAI
