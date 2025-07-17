@@ -496,18 +496,22 @@ function NotifyKilledOfficer(Pawn Officer)
 
 private function float GetNearbyEnemyKilledMoraleModification()
 {
+	local float ModificationAmount;
+
 	if (ISwatEnemy(m_Pawn).GetEnemySkill() == EnemySkill_High)
 	{
-		return HighSkillNearbyEnemyKilledMoraleModification;
+		ModificationAmount = HighSkillNearbyEnemyKilledMoraleModification;
 	}
 	else if (ISwatEnemy(m_Pawn).GetEnemySkill() == EnemySkill_Medium)
 	{
-		return MediumSkillNearbyEnemyKilledMoraleModification;
+		ModificationAmount = MediumSkillNearbyEnemyKilledMoraleModification;
 	}
 	else // == low skill
 	{
-		return LowSkillNearbyEnemyKilledMoraleModification;
+		ModificationAmount = LowSkillNearbyEnemyKilledMoraleModification;
 	}
+
+	return ModificationAmount;
 }
 
 function NotifyNearbyEnemyKilled(Pawn NearbyEnemy, Pawn Officer)
@@ -517,15 +521,12 @@ function NotifyNearbyEnemyKilled(Pawn NearbyEnemy, Pawn Officer)
 	if (Officer != None)
 	{
 		ChangeMorale(- GetNearbyEnemyKilledMoraleModification(), "Nearby Enemy " $ NearbyEnemy.Name $ " Killed By " $ Officer.Name);
-	// do some speech
-	ISwatEnemy(m_Pawn).GetEnemySpeechManagerAction().TriggerDownedSuspectSpeech();
 	}
 	else
 	{
 		ChangeMorale(- GetNearbyEnemyKilledMoraleModification(), "Nearby Enemy " $ NearbyEnemy.Name $ " Killed By an inanimate object");
-	// do some speech
-	ISwatEnemy(m_Pawn).GetEnemySpeechManagerAction().TriggerDownedSuspectSpeech();
 	}
+	ISwatEnemy(m_Pawn).GetEnemySpeechManagerAction().TriggerDownedSuspectSpeech();
 }
 
 private function float GetOutOfWeaponsMoraleModification()

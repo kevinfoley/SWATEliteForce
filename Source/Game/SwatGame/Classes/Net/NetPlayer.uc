@@ -860,7 +860,8 @@ simulated function TakeDamageEffectsHook( int Damage, Pawn EventInstigator, vect
     //    return;
 
     //we don't want to play grunts when less lethaled or non-damaged
-    if( Damage <= 0 || DamageType.Name == 'LessLethalSG' )
+    // FIXME
+    if( Damage <= 0 || DamageType.Name == 'LessLethalSG' || DamageType.Name == 'LessLethalSGOrange' || DamageType.Name == 'LessLethalM870SG')
         return;
 
     //only play the grunts if alive

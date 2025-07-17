@@ -14,7 +14,6 @@ var config int OfficerUseMaxShotsWhenStung;
 
 simulated function DealDamage(Actor Victim, int Damage, Pawn Instigator, Vector HitLocation, Vector MomentumVector, class<DamageType> DamageType )
 {
-    // Don't deal damage for pawns, instead make them effected by the sting grenade
     if ( Victim.IsA( 'Pawn' ) )
     {
       IReactToDazingWeapon(Victim).ReactToLessLeathalShotgun(Pawn(Owner), Damage, MomentumVector, PlayerStingDuration, HeavilyArmoredPlayerStingDuration, NonArmoredPlayerStingDuration, AIStingDuration, DamageType);

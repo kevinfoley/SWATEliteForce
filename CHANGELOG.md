@@ -21,10 +21,15 @@ The bulk of this update is a large AI update and major changes to the weapons to
   - Restored the original vanilla behavior for determining if suspects/SWAT can hit their target. Fixes crashes and assorted issues with AI.
   - Suspects now fire upon doors much more reliably when barricading.
   - Suspects shoot faster and more consistently at SWAT and are more dangerous in general.
+  - Suspects take slightly longer to shoot in multiplayer to accomodate for potential lag.
   - Suspects will now shoot at SWAT when moving to barricade.
   - Search and Secure targets are now assigned by type (suspect/disableable/civilian/evidence, in that order) and then sorted by distance as opposed to being assigned randomly
+  - Suspects now only lose morale as a result of being shot when they flinch. This directly fixes a bug that caused shotguns to inflict absurd morale damage and also makes it harder to cause targets to surrender when shot.
+  - Beanbags no longer inflict a "shot" effect on targets unless hitting a suspect in the torso who has body armor (and they flinch. see above)
+  - Beanbags no longer inflict a "sting" effect when hitting a suspect in the torso who has body armor
+  - Reduced morale impact of being stung by any source (sting grenades, beanbags, triple batons)
+  - Beanbags have higher mass and lower drag. As a result, they are more likely to kill/incapacitate.
   - Fixed a TSS bug where AIs (SWAT + suspects) used wrong angles when determining if they could take cover (specifically, if the cover involves leaning)
-  - Fixed beanbag shotguns applying both the ReactToBeingShot action and the Stung action, which lead to huge morale loss and a visual glitch. (thanks to kevinfoley)
   - Fixed a TSS bug where if a suspect was stung and then became compliant, they would randomly stand up and play an "aim gun at" animation. (thanks to kevinfoley)
   - Suspects/civilians who are killed while arrested no longer count towards "Failed to report downed" penalty.
   - Suspects/civilians who are shot only decrement morale when reacting. This specifically fixes a problem where shotguns decreased morale with each pellet that hit the target.
@@ -38,7 +43,6 @@ The bulk of this update is a large AI update and major changes to the weapons to
   - SWAT AI can now use NVGs. (thanks to beppegoodoldrebel)
   - Fixed suspects having incorrect textures when wearing heavy armor (thanks to beppegoodoldrebel)
   - Fixed incorrect kilogram-to-pound conversion formula for Imperial measurements (thanks to modotte)
-  - Possibly fixed: bug where suspects would stand up after being arrested (Thanks to beppe for tips)
   - Removed portions of MassiveAd code (Thanks to beppegoodoldrebel)
   - Fixed an issue in CO-OP where you could ready up (and be over the weight limit) in situations where you shouldn't be able to. (Thanks to beppegoodoldrebel)
   - Added support for custom connection failure messages from the server (Thanks to beppe/SS/jankovalski)
@@ -211,6 +215,7 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
     - Changed to match real world color (black-and-orange).
     - New inventory thumbnail
     - Added smoke and dynamic light VFX to match other weapons
+    - Fixed a bug where this weapon could deal multiple
   - *Breaching variant:*
     - Tweaked stats
     - Removed the side saddle
@@ -225,6 +230,7 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
   - Reverted to vanilla model; added right side to mesh and increased polycount
   - Removed holographic sight variant as it is anachronistic
   - Fixed the side saddle
+  - Fixed animation for ironsights (this was done by beppegoodoldrebel)
   - Tweaked stats
 
 **Shotguns: Nova Pump / Less Lethal Shotgun**
@@ -272,6 +278,11 @@ All changes in this section are credited to Kevin Foley unless otherwise mention
   - Reduced width of receiver
   - Fixed issue where the ironsights would become misaligned after shooting
   - Fixed the third person mesh
+
+**Less Lethal: Pepperball Gun**
+
+  - Remodelled and reskinned (beppegoodoldrebel did the model, Kevin Foley did the skin)
+  - New inventory thumbnail
 
 **Light Machine Guns: M249**
 

@@ -864,10 +864,27 @@ function RemoveGoalsToDie()
 	RemoveIdleGoal();
 }
 
+function bool ShouldBeStungOnImpact(ESkeletalRegion RegionHit, class<DamageType> DamageType)
+{
+	local BodyArmor Armor;
+
+	if (!class'SwatAICommon.StungAction'.static.ClassDealsBeanbagSting(DamageType.Name))
+	{
+		return false;
+	}
+
+	Armor = BodyArmor(Pawn.GetSkeletalRegionProtection(RegionHit));
+	if (Armor != None && Armor.ProtectsAiAgainstTorsoBeanbag)
+	{
+		return false;
+	}
+	return true;
+}
+
 // subclasses should call down the chain
 function OnSkeletalRegionHit(ESkeletalRegion RegionHit, vector HitLocation, vector HitNormal, int Damage, class<DamageType> DamageType)
 {
-	if ((Damage > 0) && m_Pawn.IsConscious())
+	if ((Damage > 0) && m_Pawn.IsConscious() && !ShouldBeStungOnImpact(RegionHit, DamageType))
 	{
    		// only react if we're not already reacting
 		if ((CurrentIncapacitatedGoal == None) &&

@@ -40,6 +40,7 @@ This file attempts to document all of the changes made in the mod, although it m
  * Spoken lines by TOC on the expansion missions would cut off if the player used the shout button
  * Wedges did not appear in players' holsters.
  * If a suspect unlocked a door, it is still "known" as a locked door.
+ * Suspects didn't always correctly evaluate cover as being correct in some circumstances
  * The enemy "CallForHelp" speech was rarely/if at all triggering.
  * The enemy "AnnouncedSpottedOfficerSurprised" speech now plays.
  * Applying a loadout to the whole team in a Quick Mission which has locked equipment allowed the player to bypass the locked equipment entirely.
@@ -75,7 +76,6 @@ This file attempts to document all of the changes made in the mod, although it m
   * Suspects will close doors after firing at them.
   * Suspects may shoot the player when running away from them.
   * Suspects can shoot through thin pieces of cover, if their weapon (and ammo) is capable of it.
-  * Suspects may choose to shoot through their accomplices, if they are low skilled or Insane.
   * Suspects can wear heavy armor like SWAT can.
   * Suspects drop their weapons much faster. Most of the time.
   * Suspects react faster to grenades.
@@ -84,11 +84,11 @@ This file attempts to document all of the changes made in the mod, although it m
   * Suspects firing from cover may choose to pause or regroup between their shots, instead of constantly aiming at their target.
   * Civilians may be Fearless. When they are Fearless, they do not scream when in the presence of a suspect.
   * SWAT are much more dangerous and less hesitant to shoot at suspects.
-  * SWAT do not form "death funnels" in doors and instead will try to continue moving.
-  * SWAT will attempt to seek out cover when engaging suspects (only after clearing a room or when issued a COVER command)
+  * SWAT do not form "death funnels" as often in doors and instead will try to continue moving.
+  * SWAT will attempt to seek out cover when engaging suspects.
   * SWAT can properly use the grenade launcher now.
   * SWAT AI will ignore uncompliant civilians or cuffed civilians/suspects while there are active threats.
-  * SWAT will no longer try to shoot through civilians or players when attacking their target.
+  * SWAT will no longer try to shoot through civilians or players when attacking their target. (Suspects can, and will, though.)
   * SWAT will reload their weapons when ordered to fall in.
   * SWAT do not become distracted by suspects/civilians when they are following you or going to a specific destination (with MOVE TO). They will shout at them (and/or attack), but continue moving.
   * SWAT will shoot beanbags and pepperballs at fleeing suspects (when following a FALL IN or MOVE TO command) intelligently, keeping in mind not to spam beanbags and kill people. SWAT can now use pepperballs and beanbags as proper weapons in general.
@@ -115,6 +115,7 @@ This file attempts to document all of the changes made in the mod, although it m
   * Custom player skins can now override the first person hands texture.
 
 ## GUI ##
+  * The user interface has been optimized for widescreen resolutions and has received touch-ups throughout.
   * Training mission returns! New Features menu from the Expansion is gone.
   * "Disable Initial Dispatch" option in Audio Settings lets you skip the initial dispatches.
   * "Mouse Smoothing" checkbox in Control Settings enables (default) or disables mouse smoothing.
@@ -127,7 +128,7 @@ This file attempts to document all of the changes made in the mod, although it m
   * Maps in the Voting screen are now sorted alphabetically.
   * Host Game no longer precaches all of the maps at once; it goes to the menu and loads the maps while in the menu.
   * Added Advanced Information tab to Equipment Panel. It now shows a weapon's manufacturer, manufacturer country, date manufactured, caliber, magazine size, maximum ammo carried, muzzle velocity and firing modes. It also shows advanced information for protective equipment.
-  * Weapons are now selected by dropdown menus, for faster selection
+  * Weapons are now selected by dropdown menus, for faster selection, and have "variants" that are pickable.
   * New splash screen
   * More advanced console. It will now show output of commands, and a console log. You need to press ESC to close the console now.
   * All "RESERVED" keys are now able to be edited. The category has been renamed to "NUMBER ROW".
@@ -136,13 +137,10 @@ This file attempts to document all of the changes made in the mod, although it m
   * New main menu logo
   * All evidence of Gamespy scrubbed
   * Removed "Check for Patch" button on the join game menu
-  * Cleaned up appearance throughout
   * You can now Un-Ready yourself in CO-OP games.
   * In CO-OP, clicking the Equipment button automatically Un-Readies yourself.
-  * Support in the menu for 5x as many resolutions, including many widescreen resolutions
-  * The menu will now show labels on stuff in widescreen resolution
   * You no longer need a CD-key to publish a game to the Internet server browser.
-  * Restored the vanilla SWAT 4 music (the TSS music is just reused from missions..)
+  * Restored the vanilla SWAT 4 music in the main menu (the TSS music is just reused from missions..)
 
 
 ## EQUIPMENT ##
@@ -154,8 +152,10 @@ All weapons have been changed to have correct muzzle velocities.
   - Damage is now required to trigger the direct impact stun effect.
   - May now be equipped as a secondary weapon
 * Colt M4A1 Carbine:
+  - Completely remodelled and reskinned.
+  - New inventory thumbnail.
   - New ammo types: AP, JSP
-  - Four variants in total (M4A1, Suppressed M4A1, M4A1 w/ Aimpoint, Suppressed M4A1 w/ Aimpoint)
+  - Eight variants in total - choice of CQB, Aimpoint or Suppressed, or some combination of these.
   - Retextured and remodeled
 * AK47 Machinegun:
   - Now has a flashlight
@@ -168,19 +168,21 @@ All weapons have been changed to have correct muzzle velocities.
   - New ammo types: AP, JSP
   - Updated description
   - Retextured, remodeled
-  - Now has a silenced counterpart
+  - Has suppressor option
 * 5.56mm Light Machine Gun
   - Given real world name (is now M249 SAW)
   - New ammo type: JSP
   - Burst fire removed
   - Corrected wrong looking first person
+  - Fixed reload animation timing
   - Only available in Multiplayer and All Missions
 * 5.7x28mm Submachine Gun
   - Given real world name (is now P90)
   - Completely redid the description
   - New ammo types: AP, JSP
   - Burst fire removed
-  - Corrected wrong looking first person; remodeled and retextured
+  - Corrected wrong looking first person; remodeled and retextured with picatinny rail/iron sights
+  - New inventory thumbnail
   - Has a suppressed counterpart
 * Gal Sub-machinegun
   - Now has a flashlight
@@ -207,11 +209,14 @@ All weapons have been changed to have correct muzzle velocities.
 * M1911 Handgun
   - New ammo types: AP, JSP
   - May now be equipped as a Primary Weapon
+  - New Kimber skin variant
+  - Fixed smoothing groups on the mesh
 * 9mm Handgun
   - Given real world name (Glock 17)
   - New ammo types: AP, JSP
   - May now be equipped as a Primary Weapon
   - Retextured and remodeled
+  - New animations and hand placement
   - Corrected bad hand position
 * Mark 19 Semi-Automatic Pistol
   - Given real world name (Desert Eagle)
@@ -223,6 +228,7 @@ All weapons have been changed to have correct muzzle velocities.
 * 9mm Machine Pistol
   - Given real world name (TEC-DC9)
   - Completely redid the description
+  - Added right-side mesh for ironsights and cleaned up smoothing groups.
   - Now has a flashlight
   - May now be equipped as a Primary Weapon
   - Fixed broken reload sound
@@ -284,24 +290,30 @@ All weapons have been changed to have correct muzzle velocities.
   - Lists the amount you have left on the HUD
 * Pepperball Gun:
   - May now be equipped as a Secondary Weapon
+  - Remodelled and retextured, with proper working ironsights
   - Less effective in general now
 * Less Lethal Shotgun:
   - Now called the Less Lethal Nova
-  - Can incapacitate or kill subjects at point blank range
+  - Can incapacitate or kill subjects at short ranges
   - Cleaned up the model and texture (fixed smoothing groups, more accurate pump shape, slight barrel taper, added right side of the model)
+  - Remodelled and retextured
+  - Added Orange skin variant
 * M4Super90:
   - Now fires in a spread that isn't dictated by crosshair accuracy
+  - Fixed a TSS bug that caused it to impact morale than most other weapons
   - May now be equipped as a Secondary Weapon
-  - Added new ammo types: 000 Buck, 0 buck, 1 buck, 4 buck, Frangible Breaching
+  - Added new ammo types: 000 Buck, 0 buck, 1 buck, 4 buck, Frangible Breaching with varying properties
   - Renamed "12 Gauge Slug" -> "Sabot Slug"
   - Corrected magazine size (5 -> 7). SWAT 4 uses the magazine size from a civilian version of the shotgun. The Law Enforcement and Military models have 7 round magazines.
   - Can breach doors; chance to breach is dependent on ammo type
   - Touched up model
+  - Fixed small hand animation quirks
 * Pepper Spray:
   - Can be passed to teammates.
   - Now correctly lists the number of extra cans you have available on the HUD
 * Nova Pump:
   - Now fires in a spread that isn't dictated by crosshair accuracy
+  - Fixed a TSS bug that caused it to impact morale than most other weapons
   - Corrected invalid magazine size (8 -> 7)
   - Added new ammo types: 000 Buck, 0 buck, 1 buck, 4 buck, Frangible Breaching
   - Renamed "12 Gauge Slug" -> "Sabot Slug"
@@ -314,7 +326,7 @@ All weapons have been changed to have correct muzzle velocities.
 * Added two new body armor items:
   - Heavy Kevlar Body Armor: Being rated Level IIIA, it provides higher protection capabilities than the standard Level II Kevlar Armor, at the cost of a slight increase in weight.
   - Heavy Ceramic Body Armor: A plate carrier featuring NIJ Level IV rated plates, it is the ultimate in ballistic protection. It's main disadvantage is the massive weight of the plates, which slow down the user.
-* Added new weapons from the SAS mod, most have a suppressed version as well:
+* Added new weapons from the SAS mod, most have a suppressed version as well, but some have received mesh improvements:
   - ARWEN 37: Dedicated grenade launcher with flashlight and 5-round magazine.
   - SG552 Commando: Versatile assault rifle
   - HK33: Heavy-duty assault rifle. Includes a scoped version.
@@ -322,12 +334,12 @@ All weapons have been changed to have correct muzzle velocities.
   - MP5K: A more tactical machine pistol
   - Browning Hi-Power: Higher-powered 9mm pistol
   - P226: A well-rounded 9mm pistol
-  - Remington M870 Shotgun: Shortened shotgun that can be equipped as primary or secondary weapon
-* Added new equipment from the SWAT4 1.2 mod:
+  - Remington M870 Shotgun: Shortened shotgun that can be equipped as primary or secondary weapon.
+* Added new equipment from the SWAT4 1.2 mod. Again, some have received mesh improvements from the mod.
   - SCAR-H: Heavy assault rifle. Includes an Aimpoint, Suppressed Aimpoint, and Suppressed variants.
   - AKs-74u: Lightweight AK carbine. Only available in Multiplayer and All Missions campaigns
   - MP5K PDW: Tiny submachine gun. Includes a suppressed variant.
-* Added new weapons (exclusive to this mod):
+* Added new weapons (which are new to this mod):
   - Less Lethal M870: Beanbag shotgun available as a secondary.
   - M870 Breaching: Technically the breaching shotgun from the original game, now as an actual weapon.
   - M1Super90 Shotgun: Cut shotgun from the original game. Lower magazine size than the M4Super90 but faster firing rate and more manageable recoil.
@@ -335,6 +347,9 @@ All weapons have been changed to have correct muzzle velocities.
   - Glock 19: Ultra lightweight 9mm pistol.
   - Colt Model 635 9mm SMG: SMG based on the M4A1. Includes a suppressed variant.
   - MP5SSD5: A silenced-only version of the MP5 with a better suppressor.
+  - MAC-10: Machine pistol, available as a secondary. Has an available suppressor variant.
+  - FAL: High-powered assault rifle.
+  - XDM: "Modern" tactical pistol option.
 * Added 3-Packs (tactical) of the following. They are equivalent in weight and bulk to five items, to incentivize taking single items over packs:
   - Grenades
   - Wedges

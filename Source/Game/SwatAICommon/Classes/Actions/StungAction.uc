@@ -10,6 +10,7 @@ class StungAction extends StunnedAction;
 // Variables
 
 var(parameters) Actor StingGrenade;
+var public config array<Name> BeanbagStingingClasses;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -66,6 +67,21 @@ function name GetRecoveryAnimation()
 {
 	return ISwatAI(m_Pawn).GetStungRecoveryAnimation();
 }
+
+static function bool ClassDealsBeanbagSting(Name ClassName)
+{
+  local int i;
+
+  for (i = 0; i < default.BeanbagStingingClasses.Length; i++)
+  {
+    if (default.BeanbagStingingClasses[i] == ClassName)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 defaultproperties
 {

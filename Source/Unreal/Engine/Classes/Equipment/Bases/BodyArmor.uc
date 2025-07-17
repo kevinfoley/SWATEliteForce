@@ -24,6 +24,7 @@ var private float CurrentMomentumToPenetrate;
 var private float CurrentBulletMtP;
 var() public config bool PlayerUsable;
 
+var(Armor) public config bool ProtectsAiAgainstTorsoBeanbag "If true, this armor protects against beanbag shots to the torso for the AI";
 var(ArmorPenetration) config ProtectionLevel ArmorProtection "What level of armor I represent?";
 var int ProtectionType "Internal measure to know the BulletClass";
 

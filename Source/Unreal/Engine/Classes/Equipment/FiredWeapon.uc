@@ -1123,8 +1123,6 @@ simulated function bool HandleProtectiveEquipmentBallisticImpact(
 function class<DamageType> GetDamageType()
 {
     //by default, a FiredWeapon passes itself as a DamageType
-    //one notable exception is the shotgun which passes the special
-    //  FrangibleBreachingDamageType for breaching purposes.
     return class;
 }
 
