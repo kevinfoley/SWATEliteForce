@@ -5727,8 +5727,15 @@ simulated function bool HasHUDPage()
     return (HUDPage != None);
 }
 
-// Toggle the player's flashlight
+// Toggle the player's flashlight or NVG.
+// Weirdly named to preserve backwards compatibility for 7.2
 exec function ToggleFlashlight()
+{
+    SwatPawn(Pawn).ToggleDesiredLightState();
+}
+
+// Toggle the player's flashlight
+exec function ToggleFlashlightOnly()
 {
     SwatPawn(Pawn).ToggleDesiredFlashlightState();
 }

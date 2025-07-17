@@ -272,7 +272,7 @@ replication
 
     // replicated functions sent to server by owning client
     reliable if( Role < ROLE_Authority )
-        ServerToggleDesiredFlashlightState, ServerToggleDesiredNVGState, ServerSetLowReadyStatus;
+        ServerToggleDesiredFlashlightState, ServerToggleDesiredNVGState, ServerToggleDesiredLightState, ServerSetLowReadyStatus;
 
     reliable if ( Role == ROLE_Authority )
         AnimFlags, FlashlightShouldBeOn, NightvisionShouldBeOn, bShouldBeAtLowReady, ReasonForShouldBeAtLowReady, bArrested, BeingArrested;
@@ -1627,6 +1627,19 @@ function ServerToggleDesiredNVGState()
     {
         SetDesiredNightvisionState(!NightvisionShouldBeOn);
     }
+}
+
+// Switches the desired light state on/off (default state is OFF)
+simulated function ToggleDesiredLightState()
+{
+    ServerToggleDesiredLightState();
+}
+
+// Executes only on the server (and in standalone)
+function ServerToggleDesiredLightState()
+{
+    ServerToggleDesiredFlashlightState();
+    ServerToggleDesiredNVGState();
 }
 
 // Switches the desired flashlight state on/off (default state is OFF).
