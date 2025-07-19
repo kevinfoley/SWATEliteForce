@@ -924,10 +924,6 @@ GivenName=Lightstick
 Description=Ingram Handgun
 FriendlyName=MAC-10 Machine Pistol
 
-[USP40HG]
-Description=SLP40 Handgun
-FriendlyName=SLP 40
-
 [ScorpionHG]
 Description=Skorpion Machine Pistol
 FriendlyName=Skorpion Machine Pistol
