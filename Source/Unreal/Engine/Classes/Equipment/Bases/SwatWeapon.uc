@@ -159,14 +159,6 @@ var(AdvancedDescription) protected localized config string RateOfFire           
 var(Categorization) public config WeaponEquipClass WeaponCategory            "Which category this weapon belongs to in the GUI.";
 var(Categorization) public config WeaponEquipType AllowedSlots               "Which slots this weapon is allowed to be equipped in";
 
-// New Damage Information
-var(Damage) protected config float Vc0         "Muzzle Velocity of the weapon";
-var(Damage) protected config float Vc1      "Diference between muzzle velocity and velocity at 50m ((Muzzle Velocity/Velocity at 50m)*-1)";
-var(Damage) protected config float Vc2      "Last Velocity factor ((Velocity at 50m-(Muzzle Velocity+(Vc1*50m)))/(50m^2))";
-var(Damage) protected config float Dc1      "Proportion between energy at 50m and muzzle velocity (Energy at 50m/(Muzzle Velocity*3.28084))";
-var(Damage) protected config float Dc2      "Last damage factor ((Dc0-(Dc1*Velocity at 50m))/(Velocity at 50m^2))";
-var(Damage) protected config bool bUsesBullets;
-
 // New recoil stuff as of V7
 var(Recoil) protected config float AutoRecoilBase;
 var(Recoil) protected config float AutoRecoilPerShot;
@@ -321,26 +313,6 @@ simulated function float GetVc0()
 	return default.MuzzleVelocity / 50.4725;
 }
 
-simulated function float GetVc1()
-{
-	return Vc1;
-}
-
-simulated function float GetVc2()
-{
-	return Vc2;
-}
-
-simulated function float GetDc1()
-{
-	return Dc1;
-}
-
-simulated function float GetDc2()
-{
-	return Dc2;
-}
-
 simulated function bool GetUsesRedDotSight() {
 	return bUsesRedDotSight;
 }
@@ -434,28 +406,17 @@ simulated function BallisticFire(vector StartTrace, vector EndTrace)
 	local Material HitMaterial, ExitMaterial; //material on object that was hit
 	local float Momentum;
 	local float Distance;
-	local float ActualVelocity;
-	local float VelocityRatio;
-	local float Velocity;
-	local float KillEnergy;
-	local int BulletType;
 	local ESkeletalRegion HitRegion;
 
 	Momentum = MuzzleVelocity * Ammo.Mass;
-	BulletType = Ammo.GetBulletType();
 	Distance = (VSize(HitLocation - StartTrace)) / 50.4725;
-	Velocity = ((GetVc0()) + ((GetVc1()) * Distance)+((GetVc2()) * (Distance * Distance)));
-	KillEnergy = ((GetDc1()) * Velocity)+((GetDc2()) * (Velocity * Velocity));
 
 	Ammo.BallisticsLog("BallisticFire(): Weapon "$name
 			$", shot by "$Owner.name
 			$", has MuzzleVelocity="$MuzzleVelocity
 			$", Ammo "$Ammo.name
-			$", Class "$BulletType
 			$" has Mass="$Ammo.Mass
 			$".  Initial Momentum is "$Momentum
-			$".  Velocity is "$Velocity
-			$".  Kill Energy is "$KillEnergy
 			$".  Target is at "$Distance
 			$"m.");
 
@@ -476,15 +437,6 @@ simulated function BallisticFire(vector StartTrace, vector EndTrace)
 			ExitNormal,
 			ExitMaterial )
 	{
-//        Ammo.BallisticsLog("IMPACT: Momentum before drag: "$Momentum);
-//        Momentum -= Ammo.GetDrag() * VSize(HitLocation - StartTrace);
-//        Ammo.BallisticsLog("IMPACT: Momentum after drag: "$Momentum);
-
-		Ammo.BallisticsLog("IMPACT: KillEnergy before calculating penetration: "$KillEnergy);
-		ActualVelocity = Momentum / Ammo.Mass;
-		VelocityRatio = ActualVelocity / MuzzleVelocity;
-		KillEnergy *= VelocityRatio;
-		Ammo.BallisticsLog("IMPACT: KillEnergy before calculating penetration: "$KillEnergy);
 
 		if(Momentum < 0.0) {
 			Ammo.BallisticsLog("Momentum went < 0. Not impacting with anything (LOST BULLET)");
@@ -494,10 +446,10 @@ simulated function BallisticFire(vector StartTrace, vector EndTrace)
 		//handle each ballistic impact until the bullet runs out of momentum and does not penetrate
 		if (Ammo.CanRicochet(Victim, HitLocation, HitNormal, Normal(HitLocation - StartTrace), HitMaterial, Momentum, 0)) {
 			// Do a ricochet
-			DoBulletRicochet(Victim, HitLocation, HitNormal, Normal(HitLocation - StartTrace), HitMaterial, Momentum, KillEnergy, BulletType, 0);
+			DoBulletRicochet(Victim, HitLocation, HitNormal, Normal(HitLocation - StartTrace), HitMaterial, Momentum, 0);
 			break;
 		}
-		else if (!HandleBallisticImpact(Victim, HitLocation, HitNormal, Normal(HitLocation - StartTrace), HitMaterial, HitRegion, Momentum, KillEnergy, BulletType, ExitLocation, ExitNormal, ExitMaterial))
+		else if (!HandleBallisticImpact(Victim, HitLocation, HitNormal, Normal(HitLocation - StartTrace), HitMaterial, HitRegion, Momentum, ExitLocation, ExitNormal, ExitMaterial))
 			break;
 	}
 }
@@ -510,8 +462,6 @@ simulated function bool HandleBallisticImpact(
 		Material HitMaterial,
 		ESkeletalRegion HitRegion,
 		out float Momentum,
-		out float KillEnergy,
-		out int BulletType,
 		vector ExitLocation,
 		vector ExitNormal,
 		Material ExitMaterial
@@ -524,24 +474,14 @@ simulated function bool HandleBallisticImpact(
 	local int Damage;
 	local float KillChance;
 	local float RandomChance;
-	local float ActualVelocity;
-	local float VelocityRatio;
-	local float OriginalKillEnergy;
-	local float StartingKillEnergy;
 	local SkeletalRegionInformation SkeletalRegionInformation;
 	local ProtectiveEquipment Protection;
-	local int ArmorLevel;
-	local int BulletLevel;
 	local float WoundChance;
 	local float DamageModifier, ExternalDamageModifier;
 	local float LimbInjuryAimErrorPenalty;
 	local IHaveSkeletalRegions SkelVictim;
 	local Pawn  PawnVictim;
 	local PlayerController OwnerPC;
-
-	BulletType = Ammo.GetBulletType();
-	ArmorLevel = Protection.GetProtectionType();
-	BulletLevel = Ammo.GetPenetrationType();
 
 	// You shouldn't be able to hit hidden actors that block zero-extent
 	// traces (i.e., projectors, blocking volumes). However, the 'Victim'
@@ -610,11 +550,7 @@ simulated function bool HandleBallisticImpact(
 								HitLocation,
 								HitNormal,
 								NormalizedBulletDirection,
-								Momentum,
-								KillEnergy,
-								BulletType,
-								ArmorLevel,
-								BulletLevel))
+								Momentum))
 					{
 						return false;   //blocked by ProtectiveEquipment
 					}
@@ -665,217 +601,7 @@ simulated function bool HandleBallisticImpact(
 	{
 		Damage = 0;
 	}
-
-	if(SkeletalRegionInformation != None && PawnVictim != None && bUsesBullets)
-	{
-		// dbeswick: stats
-		OwnerPC = PlayerController(Pawn(Owner).Controller);
-		if (OwnerPC != None)
-		{
-			OwnerPC.Stats.Hit(class.Name, PlayerController(PawnVictim.Controller));
-		}
-
-		// Give chances based on the part hit
-		if (HitRegion == REGION_Head)
-			WoundChance = 1;
-
-		if (HitRegion == REGION_Torso)
-		{
-			// SEF: Why are we using BulletType instead of AmmoType? -Kevin
-			// SEF: This is copy-pasted in two places and should be its own function. -Kevin
-			switch(BulletType)
-			{
-				case 1: //9mmAP
-					WoundChance = 280;
-					break;
-				case 2:
-					WoundChance = 140;
-					break;
-				case 3:
-					WoundChance = 120;
-					break;
-				case 4:
-					WoundChance = 100;
-					break;
-				case 5: //45AP
-					WoundChance = 195;
-					break;
-				case 6:
-					WoundChance = 125;
-					break;
-				case 7:
-					WoundChance = 100;
-					break;
-				case 8:
-					WoundChance = 70;
-					break;
-				case 9: //357AP
-					WoundChance = 300;
-					break;
-				case 10:
-					WoundChance = 120;
-					break;
-				case 11:
-					WoundChance = 90;
-					break;
-				case 12:
-					WoundChance = 65;
-					break;
-				case 13: //57AP
-					WoundChance = 150;
-					break;
-				case 14:
-					WoundChance = 70;
-					break;
-				case 15:
-					WoundChance = 60;
-					break;
-				case 16:
-					WoundChance = 50;
-					break;
-				case 17: //50AP
-					WoundChance = 715;
-					break;
-				case 18:
-					WoundChance = 375;
-					break;
-				case 19:
-					WoundChance = 330;
-					break;
-				case 20:
-					WoundChance = 250;
-					break;
-				case 21: //32AP
-					WoundChance = 100;
-					break;
-				case 22:
-					WoundChance = 60;
-					break;
-				case 23:
-					WoundChance = 50;
-					break;
-				case 24:
-					WoundChance = 45;
-					break;
-				case 25: //223 AP
-					WoundChance = 620;
-					break;
-				case 26: //223 FMJ
-					WoundChance = 220;
-					break;
-				case 27: //223 JSP
-					WoundChance = 180;
-					break;
-				case 28: //223 JHP
-					WoundChance = 155;
-					break;
-				case 29: //762 AP (Russian)
-					WoundChance = 845;
-					break;
-				case 30:
-					WoundChance = 400;
-					break;
-				case 31:
-					WoundChance = 350;
-					break;
-				case 32:
-					WoundChance = 300;
-					break;
-				case 33: //308 AP
-					WoundChance = 850;
-					break;
-				case 34:
-					WoundChance = 300;
-					break;
-				case 35:
-					WoundChance = 245;
-					break;
-				case 36:
-					WoundChance = 200;
-					break;
-				case 37: //5.45 AP
-					WoundChance = 650;
-					break;
-				case 38:
-					WoundChance = 330;
-					break;
-				case 39:
-					WoundChance = 245;
-					break;
-				case 40:
-					WoundChance = 200;
-					break;
-				case 41:
-				case 42:
-				case 43:
-				case 44:
-				case 45:
-				case 46:
-					WoundChance = 100;
-					break;
-				default:
-					WoundChance = 100;
-			}
-		}
-
-		if ((HitRegion == REGION_LeftArm || HitRegion == REGION_RightArm))
-			WoundChance = 1350;
-		if ((HitRegion == REGION_LeftLeg || HitRegion == REGION_RightLeg))
-			WoundChance = 600;
-
-		//Reset damage First
-		Damage = 0;
-
-		OriginalKillEnergy = KillEnergy;
-
-		log( "Initiating damage system" );
-		do
-		{
-			KillChance = 1 - (WoundChance / KillEnergy);
-			RandomChance = 1.0 - FRand();
-			log( "The KillEnergy is " $ KillEnergy );
-			log( "The KillChance is " $ KillChance );
-			log( "The RandomChance is " $ RandomChance );
-			if (KillChance <= 0.10)
-			{
-				KillChance = 0.10;
-			}
-			if (RandomChance < KillChance)
-			{
-				Damage += 15;
-				log( "Victim is wounded. Adding 15 damage points. Actual Damage points are " $ Damage );
-			}
-			else
-			{
-				Damage += 5;
-				log( "Victim is not wounded. Adding 5 damage point. Actual Damage points are " $ Damage );
-			}
-			KillEnergy = KillEnergy - WoundChance;
-		}
-		until( KillEnergy <= 0 || RandomChance > KillChance || Damage > 150);
-
-		log( "Stopping, RandomChance is higher than kill chance");
-		log( "We need to restore the kill energy");
-		log("IMPACT: KillEnergy before calculating penetration: "$OriginalKillEnergy);
-		StartingKillEnergy = OriginalKillEnergy;
-		ActualVelocity = (Momentum - MomentumLostToVictim) / Ammo.Mass;
-		VelocityRatio = ActualVelocity / MuzzleVelocity;
-		OriginalKillEnergy *= VelocityRatio;
-		KillEnergy = OriginalKillEnergy;
-		if (KillEnergy <= 0)
-		{
-			KillEnergy = 0;
-		}
-		log("IMPACT: KillEnergy after calculating penetration: "$KillEnergy);
-		log( "KillEnergy now is " $ KillEnergy );
-		if (StartingKillEnergy <= 0)
-		{
-			Damage = 0;
-			log( "This was pointless because Originally our Kill Energy was 0 or less." );
-		}
-		log( "Final damage is " $ Damage );
-	}
-
+	else 
 	if( Damage > 0 && SkeletalRegionInformation != None && PawnVictim != None)
 	{
 		// dbeswick: stats
@@ -884,15 +610,12 @@ simulated function bool HandleBallisticImpact(
 		{
 			OwnerPC.Stats.Hit(class.Name, PlayerController(PawnVictim.Controller));
 		}
-		if(!bUsesBullets)
-		{
-			DamageModifier = RandRange(SkeletalRegionInformation.DamageModifier.Min, SkeletalRegionInformation.DamageModifier.Max);
+		DamageModifier = RandRange(SkeletalRegionInformation.DamageModifier.Min, SkeletalRegionInformation.DamageModifier.Max);
 
-			// Give the weapon the chance to override arm specific damage...
-			if ( OverrideArmDamageModifier != 0 && (HitRegion == REGION_LeftArm || HitRegion == REGION_RightArm)  )
-				DamageModifier = OverrideArmDamageModifier;
-			Damage *= DamageModifier;
-		}
+		// Give the weapon the chance to override arm specific damage...
+		if ( OverrideArmDamageModifier != 0 && (HitRegion == REGION_LeftArm || HitRegion == REGION_RightArm)  )
+			DamageModifier = OverrideArmDamageModifier;
+		Damage *= DamageModifier;
 
 		LimbInjuryAimErrorPenalty = RandRange(SkeletalRegionInformation.AimErrorPenalty.Min, SkeletalRegionInformation.AimErrorPenalty.Max);
 		PawnVictim.AccumulatedLimbInjury += LimbInjuryAimErrorPenalty;
@@ -1009,20 +732,13 @@ simulated function bool HandleProtectiveEquipmentBallisticImpact(
 		vector HitLocation,
 		vector HitNormal,
 		vector NormalizedBulletDirection,
-		out float Momentum,
-		out float KillEnergy,
-		out int BulletType,
-		int ArmorLevel,
-		int BulletLevel
-	)
+		out float Momentum)
 {
 	local bool PenetratesProtection;
 	local vector MomentumVector;
 	local int Damage;
-	local float ActualVelocity;
-	local float VelocityRatio;
-	local float OriginalKillEnergy;
-	local float StartingKillEnergy;
+	local int ArmorLevel;
+	local int BulletLevel;
 	local float KillChance;
 	local float RandomChance;
 	local float WoundChance;
@@ -1033,9 +749,10 @@ simulated function bool HandleProtectiveEquipmentBallisticImpact(
 	ArmorLevel = Protection.GetProtectionType();
 	BulletLevel = Ammo.GetPenetrationType();
 
-		//the bullet will penetrate the protection unles it loses all of its momentum to the protection
-		//Now it will penetrate if the bullet is designed to penetrate
-		//PenetratesProtection = (Protection.GetMtP() < Momentum);
+	//the bullet will penetrate the protection unles it loses all of its momentum to the protection
+	//PenetratesProtection = (Protection.GetMtP() < Momentum);
+	
+	//Now it will penetrate if the bullet is designed to penetrate
 	PenetratesProtection = (BulletLevel >= ArmorLevel);
 
 	//determine DamageModifierRange
@@ -1049,217 +766,8 @@ simulated function bool HandleProtectiveEquipmentBallisticImpact(
 	MomentumLostToProtection = FMin(Momentum, Protection.GetMtP());
 	Damage = MomentumLostToProtection * Level.GetRepo().MomentumToDamageConversionFactor;
 
-	if(Damage > 0 && bUsesBullets)
-	{
-		if (HitRegion == REGION_Head)
-		{
-			if (BulletLevel >= ArmorLevel)
-				WoundChance = 1;
-			else
-				WoundChance = 400;
-		}
-		if (HitRegion == REGION_Torso)
-		{
-			if (BulletLevel >= ArmorLevel)
-			{
-				// SEF: Why are we using BulletType instead of AmmoType? -Kevin
-				// SEF: This is copy-pasted in two places and should be its own function. -Kevin
-				switch(BulletType)
-				{
-					case 1:
-						WoundChance = 280;
-						break;
-					case 2:
-						WoundChance = 140;
-						break;
-					case 3:
-						WoundChance = 120;
-						break;
-					case 4:
-						WoundChance = 100;
-						break;
-					case 5:
-						WoundChance = 195;
-						break;
-					case 6:
-						WoundChance = 125;
-						break;
-					case 7:
-						WoundChance = 100;
-						break;
-					case 8:
-						WoundChance = 70;
-						break;
-					case 9:
-						WoundChance = 300;
-						break;
-					case 10:
-						WoundChance = 120;
-						break;
-					case 11:
-						WoundChance = 90;
-						break;
-					case 12:
-						WoundChance = 65;
-						break;
-					case 13:
-						WoundChance = 150;
-						break;
-					case 14:
-						WoundChance = 70;
-						break;
-					case 15:
-						WoundChance = 60;
-						break;
-					case 16:
-						WoundChance = 50;
-						break;
-					case 17:
-						WoundChance = 715;
-						break;
-					case 18:
-						WoundChance = 375;
-						break;
-					case 19:
-						WoundChance = 330;
-						break;
-					case 20:
-						WoundChance = 250;
-						break;
-					case 21:
-						WoundChance = 100;
-						break;
-					case 22:
-						WoundChance = 60;
-						break;
-					case 23:
-						WoundChance = 50;
-						break;
-					case 24:
-						WoundChance = 45;
-						break;
-					case 25:
-						WoundChance = 620;
-						break;
-					case 26:
-						WoundChance = 220;
-						break;
-					case 27:
-						WoundChance = 180;
-						break;
-					case 28:
-						WoundChance = 155;
-						break;
-					case 29:
-						WoundChance = 845;
-						break;
-					case 30:
-						WoundChance = 400;
-						break;
-					case 31:
-						WoundChance = 350;
-						break;
-					case 32:
-						WoundChance = 300;
-						break;
-					case 33:
-						WoundChance = 850;
-						break;
-					case 34:
-						WoundChance = 300;
-						break;
-					case 35:
-						WoundChance = 245;
-						break;
-					case 36:
-						WoundChance = 200;
-						break;
-					case 37:
-						WoundChance = 650;
-						break;
-					case 38:
-						WoundChance = 330;
-						break;
-					case 39:
-						WoundChance = 245;
-						break;
-					case 40:
-						WoundChance = 200;
-						break;
-					case 41:
-					case 42:
-					case 43:
-					case 44:
-					case 45:
-					case 46:
-						WoundChance = 100;
-						break;
-					default:
-						WoundChance = 100;
-				}
-			}
-			else if (ArmorLevel >= 7)
-			{
-				WoundChance = 1750;
-			}
-			else
-			{
-				WoundChance = 1200;
-			}
-		}
-		//Reset damage First
-		Damage = 0;
-		OriginalKillEnergy = KillEnergy;
-
-		log( "Initiating damage system" );
-		do
-		{
-			KillChance = 1 - (WoundChance / KillEnergy);
-			RandomChance = 1.0 - FRand();
-			log( "The KillEnergy is " $ KillEnergy );
-			log( "The KillChance is " $ KillChance );
-			log( "The RandomChance is " $ RandomChance );
-			if (KillChance <= 0.10)
-			{
-				KillChance = 0.10;
-			}
-			if (RandomChance < KillChance)
-			{
-				Damage += 10;
-				log( "Victim is wounded. Adding 10 damage points. Actual Damage points are " $ Damage );
-			}
-			else
-			{
-				Damage += 4;
-				log( "Victim is not wounded. Adding 4 damage point. Actual Damage points are " $ Damage );
-			}
-			KillEnergy = KillEnergy - WoundChance;
-		}
-		until( KillEnergy <= 0 || RandomChance > KillChance || Damage > 150);
-
-		log( "Stopping, RandomChance is higher than kill chance");
-		log( "We need to restore the kill energy");
-		log("IMPACT: KillEnergy before calculating penetration: "$OriginalKillEnergy);
-		KillEnergy = OriginalKillEnergy - WoundChance;
-		if (KillEnergy <= 0)
-		{
-			KillEnergy = 0;
-		}
-		log("IMPACT: KillEnergy after calculating penetration: "$KillEnergy);
-		log( "KillEnergy now is " $ KillEnergy );
-		if (StartingKillEnergy <= 0)
-		{
-			Damage = 0;
-			log( "This was pointless because Originally our Kill Energy was 0 or less." );
-		}
-		log( "Final damage is " $ Damage );
-	}
-
-	if(!bUsesBullets)
-	{
-		DamageModifier = RandRange(DamageModifierRange.Min, DamageModifierRange.Max);
-		Damage *= DamageModifier;
-	}
+	DamageModifier = RandRange(DamageModifierRange.Min, DamageModifierRange.Max);
+	Damage *= DamageModifier;
 
 	//apply any external damage modifiers (maintained by the Repo)
 	ExternalDamageModifier = Level.GetRepo().GetExternalDamageModifier( Owner, Victim );
@@ -1271,7 +779,6 @@ simulated function bool HandleProtectiveEquipmentBallisticImpact(
 		MomentumVector *= Level.getRepo().MomentumImpartedOnPenetrationFraction;
 
 	Ammo.BallisticsLog("  ->  Remaining Momentum is "$Momentum$".");
-	Ammo.BallisticsLog("  ->  Remaining KillEnergy is "$KillEnergy$".");
 	Ammo.BallisticsLog("  ... Bullet hit "$Protection.class.name$" ProtectiveEquipment on Victim "$Victim.name);
 	Ammo.BallisticsLog("  ... Protection.MomentumToPenetrate is "$Protection.GetMtP()$".");
 	Ammo.BallisticsLog("  ... Protection.ArmorLevel is "$ArmorLevel$".");
